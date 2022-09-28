@@ -8,8 +8,12 @@ edition = "2021"
 [dependencies]
 tui = "0.19"
 crossterm = "0.25"
-
 # I/O async/await runtime
 tokio = { version = "1", features = ["full"] }
 
 eyre = { version = "0.6.8"}
+
+log = "0.4"
+
+# tui-logger = "0.6"
+tui-logger = { git = "https://github.com/gin66/tui-logger", rev = "3a3568e2464dddc2205e071234135998342d7f1d" }
