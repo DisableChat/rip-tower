@@ -57,30 +57,6 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::new(backend)?;
 
     let events = events::Events::new();
-    /*
-    let (tx, rx) = mpsc::channel();
-    let tick_rate = Duration::from_millis(200);
-    thread::spawn(move || {
-        let mut last_tick = Instant::now();
-        loop {
-            let timeout = tick_rate
-                .checked_sub(last_tick.elapsed())
-                .unwrap_or_else(|| Duration::from_secs(0));
-
-            if event::poll(timeout).expect("poll works") {
-                if let CEvent::Key(key) = event::read().expect("can read events") {
-                    tx.send(events::Event::Input(key)).expect("can send events");
-                }
-            }
-
-            if last_tick.elapsed() >= tick_rate {
-                if let Ok(_) = tx.send(events::Event::Tick) {
-                    last_tick = Instant::now();
-                }
-            }
-        }
-    });
-    */
 
     loop {
         terminal.draw(ui)?;
@@ -96,29 +72,8 @@ fn main() -> Result<()> {
                 _ => {}
             }
         }
-        /*     match rx.recv()? {
-                events::Event::Input(event) => match event.code {
-                    KeyCode::Char('q') => {
-                        //disable_raw_mode()?;
-                        //terminal.show_cursor()?;
-                        //break;
-                        break;
-                    }
-                    //KeyCode::Char('h') => tabs.next(),
-                    //KeyCode::Char('p') => active_menu_item = MenuItem::Pets,
-                    //KeyCode::Char('d') => {
-                    //    remove_pet_at_index(&mut pet_list_state).expect("can remove pet");
-                    //}
-                    //KeyCode::Down => {
-                    //}
-                    _ => {}
-                },
-                events::Event::Tick => {}
-            }
-        }
-        */
     }
-    //thread::sleep(Duration::from_millis(5000));
+
     // restore terminal
     disable_raw_mode()?;
     execute!(

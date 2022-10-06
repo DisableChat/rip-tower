@@ -4,7 +4,6 @@ use std::time::{Duration, Instant};
 use std::{io, thread};
 
 use crate::key::Key;
-//use crate::key::Key;
 
 pub enum Event<I> {
     Input(I),
@@ -19,7 +18,7 @@ impl Events {
     pub fn new() -> Events {
         let (tx, rx) = mpsc::channel();
 
-        let tx_clone = tx.clone();
+        //let tx_clone = tx.clone();
         let tick_rate = Duration::from_millis(200);
 
         thread::spawn(move || {
@@ -32,12 +31,12 @@ impl Events {
                 if event::poll(timeout).expect("poll works") {
                     if let CEvent::Key(key) = event::read().expect("can read events") {
                         let rip = Key::from(key);
-                        tx_clone.send(Event::Input(rip)).expect("can send events");
+                        tx.send(Event::Input(rip)).expect("can send events");
                     }
                 }
 
                 if last_tick.elapsed() >= tick_rate {
-                    if let Ok(_) = tx_clone.send(Event::Tick) {
+                    if let Ok(_) = tx.send(Event::Tick) {
                         last_tick = Instant::now();
                     }
                 }
