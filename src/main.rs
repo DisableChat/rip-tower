@@ -20,32 +20,9 @@ use tui::{
     Frame, Terminal,
 };
 
+use ui::{ui, Tabss};
 use key::Key;
-struct Tabss<'a> {
-    pub titles: Vec<&'a str>,
-    pub index: usize,
-}
-
-impl<'a> Tabss<'a> {
-    fn new() -> Tabss<'a> {
-        Tabss {
-            titles: vec!["Home", "Stats", "Help"],
-            index: 0,
-        }
-    }
-
-    pub fn next(&mut self) {
-        self.index = (self.index + 1) % self.titles.len();
-    }
-
-    pub fn previous(&mut self) {
-        if self.index > 0 {
-            self.index -= 1;
-        } else {
-            self.index = self.titles.len() - 1;
-        }
-    }
-}
+mod app;
 
 // main.rs
 fn main() -> Result<()> {
@@ -57,17 +34,21 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::new(backend)?;
 
     let events = events::Events::new();
+    let mut tabs = Tabss::new();
 
     loop {
-        terminal.draw(ui)?;
+        terminal.draw(|f| ui(f, & mut tabs) )?;
         if let events::Event::Input(event) = events.next()? {
             match event {
                 //KeyCode::Char('c') | KeyCode::Char('q') => {break;}
                 Key::Ctrl('c') | Key::Char('q') => {
                     break;
                 }
-                Key::Up => {
-                    println!("Base 10 repr:               {}", 69420);
+                Key::Right => {
+                   tabs.next(); 
+                }
+                Key::Left => {
+                   tabs.previous(); 
                 }
                 _ => {}
             }
@@ -85,65 +66,3 @@ fn main() -> Result<()> {
 
     Ok(())
 } // Terminal initialization for UI
-
-pub fn ui<B: Backend>(f: &mut Frame<B>) {
-    let size = f.size();
-
-    let chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .margin(1)
-        .constraints(
-            [
-                Constraint::Length(3),
-                Constraint::Length(4),
-                Constraint::Min(4),
-                Constraint::Length(4),
-            ]
-            .as_ref(),
-        )
-        .split(f.size());
-
-    let menu = Tabss::new();
-
-    let titles = menu
-        .titles
-        .iter()
-        .map(|t| {
-            let (first, rest) = t.split_at(1);
-            Spans::from(vec![
-                Span::styled(first, Style::default().fg(Color::Yellow)),
-                Span::styled(rest, Style::default().fg(Color::Green)),
-            ])
-        })
-        .collect();
-
-    let tabs = Tabs::new(titles)
-        .block(Block::default().borders(Borders::ALL).title("Tabs"))
-        .select(menu.index)
-        .style(Style::default().fg(Color::Cyan))
-        .highlight_style(
-            Style::default()
-                .add_modifier(Modifier::BOLD)
-                .bg(Color::Black),
-        );
-    f.render_widget(tabs, chunks[0]);
-
-    let block = Block::default().title("Block").borders(Borders::ALL);
-    f.render_widget(block, chunks[1]);
-    let block = Block::default().title("Block 2").borders(Borders::ALL);
-
-    f.render_widget(block, chunks[2]);
-
-    let rip_chat = Paragraph::new("Fucking Rip")
-        .style(Style::default().fg(Color::LightCyan))
-        .alignment(Alignment::Center)
-        .block(
-            Block::default()
-                .borders(Borders::ALL)
-                .style(Style::default().bg(Color::LightRed).fg(Color::White))
-                .title("Get Rekt")
-                .border_type(BorderType::Plain),
-        );
-
-    f.render_widget(rip_chat, chunks[3]);
-}
