@@ -41,8 +41,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, menu: &mut Tabss) {
 
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .margin(1)
-        .constraints([Constraint::Length(3), Constraint::Length(4)].as_ref())
+        .constraints([Constraint::Length(3), Constraint::Min(0)].as_ref())
         .split(f.size());
 
     let titles = menu
