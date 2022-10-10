@@ -20,8 +20,8 @@ use tui::{
     Frame, Terminal,
 };
 
-use ui::{ui, Tabss};
 use key::Key;
+use ui::{ui, Tabss};
 mod app;
 
 // main.rs
@@ -37,7 +37,7 @@ fn main() -> Result<()> {
     let mut tabs = Tabss::new();
 
     loop {
-        terminal.draw(|f| ui(f, & mut tabs) )?;
+        terminal.draw(|f| ui(f, &mut tabs))?;
         if let events::Event::Input(event) = events.next()? {
             match event {
                 //KeyCode::Char('c') | KeyCode::Char('q') => {break;}
@@ -45,10 +45,10 @@ fn main() -> Result<()> {
                     break;
                 }
                 Key::Right => {
-                   tabs.next(); 
+                    tabs.next();
                 }
                 Key::Left => {
-                   tabs.previous(); 
+                    tabs.previous();
                 }
                 _ => {}
             }

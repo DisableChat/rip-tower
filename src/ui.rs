@@ -3,7 +3,7 @@ use std::time::{Duration, Instant};
 use std::{io, thread};
 use tui::{
     backend::{Backend, CrosstermBackend},
-    layout::{Alignment, Constraint, Direction, Layout,Rect},
+    layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
     widgets::{Block, BorderType, Borders, Paragraph, Tabs},
@@ -42,13 +42,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, menu: &mut Tabss) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .margin(1)
-        .constraints(
-            [
-                Constraint::Length(3),
-                Constraint::Length(4),
-            ]
-            .as_ref(),
-        )
+        .constraints([Constraint::Length(3), Constraint::Length(4)].as_ref())
         .split(f.size());
 
     let titles = menu
@@ -84,26 +78,19 @@ where
     B: Backend,
 {
     let chunks = Layout::default()
-        .constraints(
-            [
-                Constraint::Percentage(20),
-                Constraint::Percentage(80),
-            ]
-            .as_ref(),
-        )
+        .constraints([Constraint::Percentage(20), Constraint::Percentage(80)].as_ref())
         .split(area);
     let rip_chat = Paragraph::new("Fucking Rip")
-    .style(Style::default().fg(Color::LightCyan))
-    .alignment(Alignment::Center)
-    .block(
-        Block::default()
-            .borders(Borders::ALL)
-            .style(Style::default().bg(Color::LightRed).fg(Color::White))
-            .title("Get Rekt")
-            .border_type(BorderType::Plain),
-    );
+        .style(Style::default().fg(Color::LightCyan))
+        .alignment(Alignment::Center)
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .style(Style::default().bg(Color::LightRed).fg(Color::White))
+                .title("Get Rekt")
+                .border_type(BorderType::Plain),
+        );
     f.render_widget(rip_chat, chunks[0]);
     let block = Block::default().title("Block").borders(Borders::ALL);
     f.render_widget(block, chunks[1]);
 }
-
