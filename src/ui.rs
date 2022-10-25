@@ -85,7 +85,7 @@ where
     let chunks = Layout::default()
         .constraints([Constraint::Percentage(20), Constraint::Percentage(80)].as_ref())
         .split(area);
-    let rip_chat = Paragraph::new("Fucking Rip")
+    let rip_chat = Paragraph::new("Big Ol Rips in Amish")
         .style(Style::default().fg(Color::LightCyan))
         .alignment(Alignment::Center)
         .block(
