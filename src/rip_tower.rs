@@ -17,6 +17,7 @@ use tui::{
     Frame, Terminal,
 };
 
+use crate::app::App;
 use crate::events;
 use crate::key::Key;
 use crate::ui::{ui, Tabss};
@@ -28,11 +29,35 @@ pub fn run() -> Result<()> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
+    // Create App and run it
+    let app = App::new("Rip Tower Swag");
+    let res = run_app(&mut terminal, app);
+
+    // restore terminal
+    disable_raw_mode()?;
+    execute!(
+        terminal.backend_mut(),
+        LeaveAlternateScreen,
+        DisableMouseCapture
+    )?;
+    terminal.show_cursor()?;
+
+    if let Err(err) = res {
+        println!("{:?}", err)
+    }
+
+    Ok(())
+}
+
+fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<()> {
     let events = events::Events::new();
     let mut tabs = Tabss::new();
 
     loop {
-        terminal.draw(|f| ui(f, &mut tabs))?;
+        // Render
+        terminal.draw(|f| ui(f, &mut app, &mut tabs))?;
+
+        // Handle Inputs
         if let events::Event::Input(event) = events.next()? {
             match event {
                 //KeyCode::Char('c') | KeyCode::Char('q') => {break;}
@@ -50,13 +75,5 @@ pub fn run() -> Result<()> {
         }
     }
 
-    // restore terminal
-    disable_raw_mode()?;
-    execute!(
-        terminal.backend_mut(),
-        LeaveAlternateScreen,
-        DisableMouseCapture
-    )?;
-    terminal.show_cursor()?;
     Ok(())
 }

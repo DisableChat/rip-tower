@@ -10,6 +10,8 @@ use tui::{
     Frame, Terminal,
 };
 
+use crate::app::App;
+
 pub struct Tabss<'a> {
     pub titles: Vec<&'a str>,
     pub index: usize,
@@ -36,7 +38,7 @@ impl<'a> Tabss<'a> {
     }
 }
 
-pub fn ui<B: Backend>(f: &mut Frame<B>, menu: &mut Tabss) {
+pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, menu: &mut Tabss) {
     let size = f.size();
 
     let chunks = Layout::default()
@@ -57,7 +59,11 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, menu: &mut Tabss) {
         .collect();
 
     let tabs = Tabs::new(titles)
-        .block(Block::default().borders(Borders::ALL).title("Tabs"))
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title(app.title.to_string()),
+        )
         .select(menu.index)
         .style(Style::default().fg(Color::Cyan))
         .highlight_style(
