@@ -52,7 +52,6 @@ pub fn run() -> Result<()> {
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<()> {
     let events = events::Events::new();
     let mut tabs = Tabss::new();
-
     loop {
         // Render
         terminal.draw(|f| ui(f, &mut app, &mut tabs))?;

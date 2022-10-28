@@ -6,7 +6,10 @@ use tui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
-    widgets::{Block, BorderType, Borders, Paragraph, Tabs},
+    widgets::{
+        canvas::{Canvas, Rectangle},
+        Block, BorderType, Borders, Paragraph, Tabs,
+    },
     Frame, Terminal,
 };
 
@@ -74,6 +77,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, menu: &mut Tabss) {
     f.render_widget(tabs, chunks[0]);
     match menu.index {
         0 => draw_first_tab(f, menu, chunks[1]),
+        1 => draw_second_tab(f, menu, chunks[1]),
         _ => {}
     };
 }
@@ -98,4 +102,28 @@ where
     f.render_widget(rip_chat, chunks[0]);
     let block = Block::default().title("Block").borders(Borders::ALL);
     f.render_widget(block, chunks[1]);
+}
+
+fn draw_second_tab<B>(f: &mut Frame<B>, menu: &mut Tabss, area: Rect)
+where
+    B: Backend,
+{
+    let ball = Rectangle {
+        x: 10.0,
+        y: 30.0,
+        width: 10.0,
+        height: 10.0,
+        color: Color::Yellow,
+    };
+
+    let chunks = Layout::default();
+
+    let dots = Canvas::default()
+        .block(Block::default().borders(Borders::ALL).title("Pong"))
+        .paint(|ctx| {
+            ctx.draw(&ball);
+        })
+        .x_bounds([10.0, 110.0])
+        .y_bounds([10.0, 110.0]);
+    f.render_widget(dots, area);
 }
