@@ -91,7 +91,7 @@ where
         .block(
             Block::default()
                 .borders(Borders::ALL)
-                .style(Style::default().bg(Color::LightRed).fg(Color::White))
+                .style(Style::default().bg(Color::LightBlue).fg(Color::White))
                 .title("Get Rekt")
                 .border_type(BorderType::Plain),
         );
