@@ -86,7 +86,7 @@ impl<'a> App<'a> {
                 self.goblin_attack_enabled = !self.goblin_attack_enabled;
             }
             Key::Char('r') => {
-                self.goblin.position = Position { x: 1.0, y: 1.0 };
+                self.goblin.position = Position { x: 10.0, y: 10.0 };
                 self.goblin.reset = true;
             }
             _ => {}

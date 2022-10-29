@@ -43,11 +43,11 @@ pub struct Goblin {
 }
 
 impl Goblin {
-    pub fn new(position: Position) -> Self {
+    pub fn new(_position: Position) -> Self {
         Goblin {
             position: Position {
-                x: (20.0),
-                y: (20.),
+                x: (10.0),
+                y: (10.0),
             },
             side: Color::Green,
             reset: false,
@@ -57,8 +57,8 @@ impl Goblin {
 
     pub fn attack(&mut self) {
         let end_location = Position {
-            x: (60.0),
-            y: (60.0),
+            x: (100.0),
+            y: (100.0),
         };
         if self.position != end_location {
             self.position.x += 1.0;
