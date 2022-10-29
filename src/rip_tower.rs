@@ -17,11 +17,12 @@ use tui::{
     Frame, Terminal,
 };
 
-use crate::app::App;
 use crate::events;
 use crate::key::Key;
 use crate::ui::ui;
+use crate::{app::App, events::Event};
 
+#[derive(PartialEq)]
 pub struct Position {
     pub x: f64,
     pub y: f64,
@@ -37,6 +38,7 @@ pub enum Vdirection {
 pub struct Goblin {
     pub position: Position,
     pub side: Color,
+    pub reset: bool,
     pub vector_field: Vec<Vec<Vdirection>>,
 }
 
@@ -48,7 +50,19 @@ impl Goblin {
                 y: (20.),
             },
             side: Color::Green,
+            reset: false,
             vector_field: vec![],
+        }
+    }
+
+    pub fn attack(&mut self) {
+        let end_location = Position {
+            x: (60.0),
+            y: (60.0),
+        };
+        if self.position != end_location {
+            self.position.x += 1.0;
+            self.position.y += 1.0;
         }
     }
 }
@@ -64,6 +78,7 @@ pub fn run() -> Result<()> {
     // Create App and run it
     let mut app = App::new("Rip Tower Swag");
     let res = run_app(&mut terminal, &mut app);
+    terminal.hide_cursor()?;
 
     // restore terminal
     disable_raw_mode()?;
@@ -92,9 +107,11 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> 
         terminal.draw(|f| ui(f, app))?;
 
         // Handle Inputs
-        if let events::Event::Input(event) = events.next()? {
-            app.handle_key_action(event);
-        }
+        let res = match events.next() {
+            Ok(Event::Input(key)) => app.handle_key_action(key),
+            Ok(Event::Tick) => app.handle_tick(),
+            Err(err) => println!("Oops, something wrong happen: {:?}", err),
+        };
     }
 
     Ok(())

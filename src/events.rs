@@ -19,7 +19,7 @@ impl Events {
         let (tx, rx) = mpsc::channel();
 
         //let tx_clone = tx.clone();
-        let tick_rate = Duration::from_millis(30);
+        let tick_rate = Duration::from_millis(60);
 
         thread::spawn(move || {
             let mut last_tick = Instant::now();

@@ -110,8 +110,9 @@ where
         coords: &[(app.goblin.position.x, app.goblin.position.y)],
         color: (app.goblin.side),
     };
-    let chunks = Layout::default();
-
+    let chunks = Layout::default()
+        .constraints([Constraint::Percentage(90), Constraint::Percentage(10)].as_ref())
+        .split(area);
     //app.ball.x = app.ball.x + 1 as f64;
     let dots = Canvas::default()
         .block(
@@ -125,5 +126,50 @@ where
         .x_bounds([10.0, 110.0])
         .y_bounds([10.0, 110.0]);
 
-    f.render_widget(dots, area);
+    let create_block = |title| {
+        Block::default()
+            .borders(Borders::ALL)
+            .style(Style::default().bg(Color::Black).fg(Color::White))
+            .title(Span::styled(
+                title,
+                Style::default().add_modifier(Modifier::BOLD),
+            ))
+    };
+
+    let tmp = format!("{}", app.goblin_attack_enabled.to_string().clone());
+    let goblin_reset = format!("Goblin Starting Position Reset");
+    let text = vec![
+        Spans::from(Span::styled(
+            "Goblin Attack State: ",
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Cyan),
+        )),
+        Spans::from(Span::styled(
+            tmp,
+            Style::default().add_modifier(Modifier::BOLD).fg((|| {
+                if app.goblin_attack_enabled {
+                    Color::Red
+                } else {
+                    Color::Green
+                }
+            })()),
+        )),
+        Spans::from(Span::styled(
+            if app.goblin.reset == true {
+                goblin_reset
+            } else {
+                format!(" ")
+            },
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Yellow),
+        )),
+    ];
+    f.render_widget(dots, chunks[0]);
+    let paragraph = Paragraph::new(text)
+        .style(Style::default().bg(Color::Black).fg(Color::Black))
+        .block(create_block(""))
+        .alignment(Alignment::Left);
+    f.render_widget(paragraph, chunks[1]);
 }

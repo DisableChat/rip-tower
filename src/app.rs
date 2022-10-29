@@ -40,6 +40,7 @@ pub struct App<'a> {
     pub title: &'a str,
     pub tabs: Tabs<'a>,
     pub goblin: Goblin,
+    pub goblin_attack_enabled: bool,
     pub ball: Rectangle,
 }
 
@@ -50,6 +51,7 @@ impl<'a> App<'a> {
             title,
             tabs: Tabs::new(),
             goblin: Goblin::new(Position { x: 0.0, y: 0.0 }),
+            goblin_attack_enabled: false,
             ball: Rectangle {
                 x: 10.0,
                 y: 30.0,
@@ -80,7 +82,22 @@ impl<'a> App<'a> {
             Key::Right => {
                 self.ball.x += 1 as f64;
             }
+            Key::Char('a') => {
+                self.goblin_attack_enabled = !self.goblin_attack_enabled;
+            }
+            Key::Char('r') => {
+                self.goblin.position = Position { x: 1.0, y: 1.0 };
+                self.goblin.reset = true;
+            }
             _ => {}
+        }
+    }
+
+    pub fn handle_tick(&mut self) {
+        // Simulate goblin attack movement based on "a state"
+        if self.goblin_attack_enabled {
+            self.goblin.attack();
+            self.goblin.reset = false;
         }
     }
 }
