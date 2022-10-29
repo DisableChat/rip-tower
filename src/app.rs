@@ -7,14 +7,14 @@ use tui::{
 };
 
 use crate::key::Key;
-pub struct Tabss<'a> {
+pub struct Tabs<'a> {
     pub titles: Vec<&'a str>,
     pub index: usize,
 }
 
-impl<'a> Tabss<'a> {
-    pub fn new() -> Tabss<'a> {
-        Tabss {
+impl<'a> Tabs<'a> {
+    pub fn new() -> Tabs<'a> {
+        Tabs {
             titles: vec!["Home", "Stats", "Help"],
             index: 0,
         }
@@ -36,7 +36,7 @@ impl<'a> Tabss<'a> {
 pub struct App<'a> {
     pub quit: bool,
     pub title: &'a str,
-    pub tabs: Tabss<'a>,
+    pub tabs: Tabs<'a>,
     pub ball: Rectangle,
 }
 
@@ -45,20 +45,19 @@ impl<'a> App<'a> {
         App {
             quit: false,
             title,
-            tabs: Tabss::new(),
+            tabs: Tabs::new(),
             ball: Rectangle {
                 x: 10.0,
                 y: 30.0,
                 width: 10.0,
                 height: 10.0,
-                color: Color::Yellow,
+                color: Color::Green,
             },
         }
     }
 
-    pub fn do_key_action(&mut self, val: Key) {
+    pub fn handle_key_action(&mut self, val: Key) {
         match val {
-            //KeyCode::Char('c') | KeyCode::Char('q') => {break;}
             Key::Ctrl('c') | Key::Char('q') => {
                 self.quit = true;
             }

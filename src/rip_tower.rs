@@ -61,7 +61,7 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> 
 
         // Handle Inputs
         if let events::Event::Input(event) = events.next()? {
-            app.do_key_action(event);
+            app.handle_key_action(event);
         }
     }
 

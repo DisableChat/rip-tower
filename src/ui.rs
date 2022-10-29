@@ -51,13 +51,35 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
         );
     f.render_widget(tabs, chunks[0]);
     match app.tabs.index {
-        0 => draw_first_tab(f, chunks[1]),
-        1 => draw_second_tab(f, chunks[1], app),
+        0 => draw_first_tab(f, chunks[1], app),
+        1 => draw_second_tab(f, chunks[1]),
         _ => {}
     };
 }
 
-fn draw_first_tab<B>(f: &mut Frame<B>, area: Rect)
+fn draw_first_tab<B>(f: &mut Frame<B>, area: Rect, app: &mut App)
+where
+    B: Backend,
+{
+    let chunks = Layout::default();
+
+    //app.ball.x = app.ball.x + 1 as f64;
+    let dots = Canvas::default()
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title("Goblins Incoming"),
+        )
+        .paint(|ctx| {
+            ctx.draw(&app.ball);
+        })
+        .x_bounds([10.0, 110.0])
+        .y_bounds([10.0, 110.0]);
+
+    f.render_widget(dots, area);
+}
+
+fn draw_second_tab<B>(f: &mut Frame<B>, area: Rect)
 where
     B: Backend,
 {
@@ -77,22 +99,4 @@ where
     f.render_widget(rip_chat, chunks[0]);
     let block = Block::default().title("Block").borders(Borders::ALL);
     f.render_widget(block, chunks[1]);
-}
-
-fn draw_second_tab<B>(f: &mut Frame<B>, area: Rect, app: &mut App)
-where
-    B: Backend,
-{
-    let chunks = Layout::default();
-
-    //app.ball.x = app.ball.x + 1 as f64;
-    let dots = Canvas::default()
-        .block(Block::default().borders(Borders::ALL).title("Pong"))
-        .paint(|ctx| {
-            ctx.draw(&app.ball);
-        })
-        .x_bounds([10.0, 110.0])
-        .y_bounds([10.0, 110.0]);
-
-    f.render_widget(dots, area);
 }
