@@ -30,8 +30,8 @@ pub fn run() -> Result<()> {
     let mut terminal = Terminal::new(backend)?;
 
     // Create App and run it
-    let app = App::new("Rip Tower Swag");
-    let res = run_app(&mut terminal, app);
+    let mut app = App::new("Rip Tower Swag");
+    let res = run_app(&mut terminal, &mut app);
 
     // restore terminal
     disable_raw_mode()?;
@@ -49,36 +49,19 @@ pub fn run() -> Result<()> {
     Ok(())
 }
 
-fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<()> {
+fn run_app<B: Backend>(terminal: &mut Terminal<B>, app: &mut App) -> Result<()> {
     let events = events::Events::new();
     loop {
+        if app.quit {
+            break;
+        }
+
         // Render
-        terminal.draw(|f| ui(f, &mut app))?;
+        terminal.draw(|f| ui(f, app))?;
 
         // Handle Inputs
         if let events::Event::Input(event) = events.next()? {
-            match event {
-                //KeyCode::Char('c') | KeyCode::Char('q') => {break;}
-                Key::Ctrl('c') | Key::Char('q') => {
-                    break;
-                }
-                Key::Tab => {
-                    app.next_tab();
-                }
-                Key::Up => {
-                    app.up();
-                }
-                Key::Down => {
-                    app.down();
-                }
-                Key::Left => {
-                    app.left();
-                }
-                Key::Right => {
-                    app.right();
-                }
-                _ => {}
-            }
+            app.do_key_action(event);
         }
     }
 

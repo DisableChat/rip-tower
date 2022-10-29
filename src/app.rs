@@ -5,6 +5,8 @@ use tui::{
     text::{Span, Spans},
     widgets::canvas::{Canvas, Rectangle},
 };
+
+use crate::key::Key;
 pub struct Tabss<'a> {
     pub titles: Vec<&'a str>,
     pub index: usize,
@@ -32,6 +34,7 @@ impl<'a> Tabss<'a> {
 }
 
 pub struct App<'a> {
+    pub quit: bool,
     pub title: &'a str,
     pub tabs: Tabss<'a>,
     pub ball: Rectangle,
@@ -40,6 +43,7 @@ pub struct App<'a> {
 impl<'a> App<'a> {
     pub fn new(title: &'a str) -> App<'a> {
         App {
+            quit: false,
             title,
             tabs: Tabss::new(),
             ball: Rectangle {
@@ -52,21 +56,28 @@ impl<'a> App<'a> {
         }
     }
 
-    pub fn up(&mut self) {
-        self.ball.y += 1 as f64;
-    }
-
-    pub fn down(&mut self) {
-        self.ball.y -= 1 as f64;
-    }
-    pub fn left(&mut self) {
-        self.ball.x -= 1 as f64;
-    }
-    pub fn right(&mut self) {
-        self.ball.x += 1 as f64;
-    }
-
-    pub fn next_tab(&mut self) {
-        self.tabs.next();
+    pub fn do_key_action(&mut self, val: Key) {
+        match val {
+            //KeyCode::Char('c') | KeyCode::Char('q') => {break;}
+            Key::Ctrl('c') | Key::Char('q') => {
+                self.quit = true;
+            }
+            Key::Tab => {
+                self.tabs.next();
+            }
+            Key::Up => {
+                self.ball.y += 1 as f64;
+            }
+            Key::Down => {
+                self.ball.y -= 1 as f64;
+            }
+            Key::Left => {
+                self.ball.x -= 1 as f64;
+            }
+            Key::Right => {
+                self.ball.x += 1 as f64;
+            }
+            _ => {}
+        }
     }
 }
