@@ -7,6 +7,8 @@ use tui::{
 };
 
 use crate::key::Key;
+use crate::rip_tower::{Goblin, Position};
+
 pub struct Tabs<'a> {
     pub titles: Vec<&'a str>,
     pub index: usize,
@@ -37,6 +39,7 @@ pub struct App<'a> {
     pub quit: bool,
     pub title: &'a str,
     pub tabs: Tabs<'a>,
+    pub goblin: Goblin,
     pub ball: Rectangle,
 }
 
@@ -46,6 +49,7 @@ impl<'a> App<'a> {
             quit: false,
             title,
             tabs: Tabs::new(),
+            goblin: Goblin::new(Position { x: 0.0, y: 0.0 }),
             ball: Rectangle {
                 x: 10.0,
                 y: 30.0,

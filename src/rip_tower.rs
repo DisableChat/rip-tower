@@ -1,4 +1,4 @@
-use eyre::Result;
+use eyre::{private::kind::TraitKind, Result};
 
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event as CEvent, KeyCode},
@@ -13,7 +13,7 @@ use tui::{
     layout::{Alignment, Constraint, Direction, Layout},
     style::{Color, Modifier, Style},
     text::{Span, Spans},
-    widgets::{Block, BorderType, Borders, Paragraph, Tabs},
+    widgets::{canvas::Points, Block, BorderType, Borders, Paragraph, Tabs},
     Frame, Terminal,
 };
 
@@ -21,6 +21,38 @@ use crate::app::App;
 use crate::events;
 use crate::key::Key;
 use crate::ui::ui;
+
+pub struct Position {
+    pub x: f64,
+    pub y: f64,
+}
+
+pub enum Vdirection {
+    Left,
+    Right,
+    Up,
+    Down,
+}
+
+pub struct Goblin {
+    pub position: Position,
+    pub side: Color,
+    pub vector_field: Vec<Vec<Vdirection>>,
+}
+
+impl Goblin {
+    pub fn new(position: Position) -> Self {
+        Goblin {
+            position: Position {
+                x: (20.0),
+                y: (20.),
+            },
+            side: Color::Green,
+            vector_field: vec![],
+        }
+    }
+}
+
 pub fn run() -> Result<()> {
     // setup terminal
     enable_raw_mode()?;

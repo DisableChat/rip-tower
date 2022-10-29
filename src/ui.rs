@@ -7,7 +7,7 @@ use tui::{
     style::{Color, Modifier, Style},
     text::{Span, Spans},
     widgets::{
-        canvas::{Canvas, Rectangle},
+        canvas::{Canvas, Context, Points, Rectangle},
         Block, BorderType, Borders, Paragraph, Tabs,
     },
     Frame, Terminal,
@@ -53,6 +53,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     match app.tabs.index {
         0 => draw_first_tab(f, chunks[1], app),
         1 => draw_second_tab(f, chunks[1]),
+        2 => draw_third_tab(f, chunks[1], app),
         _ => {}
     };
 }
@@ -99,4 +100,30 @@ where
     f.render_widget(rip_chat, chunks[0]);
     let block = Block::default().title("Block").borders(Borders::ALL);
     f.render_widget(block, chunks[1]);
+}
+
+fn draw_third_tab<B>(f: &mut Frame<B>, area: Rect, app: &mut App)
+where
+    B: Backend,
+{
+    let points: Points = Points {
+        coords: &[(app.goblin.position.x, app.goblin.position.y)],
+        color: (app.goblin.side),
+    };
+    let chunks = Layout::default();
+
+    //app.ball.x = app.ball.x + 1 as f64;
+    let dots = Canvas::default()
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title("Goblins Incoming"),
+        )
+        .paint(|ctx| {
+            ctx.draw(&points);
+        })
+        .x_bounds([10.0, 110.0])
+        .y_bounds([10.0, 110.0]);
+
+    f.render_widget(dots, area);
 }
