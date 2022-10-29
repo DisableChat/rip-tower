@@ -20,7 +20,7 @@ use tui::{
 use crate::app::App;
 use crate::events;
 use crate::key::Key;
-use crate::ui::{ui, Tabss};
+use crate::ui::ui;
 pub fn run() -> Result<()> {
     // setup terminal
     enable_raw_mode()?;
@@ -51,10 +51,9 @@ pub fn run() -> Result<()> {
 
 fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<()> {
     let events = events::Events::new();
-    let mut tabs = Tabss::new();
     loop {
         // Render
-        terminal.draw(|f| ui(f, &mut app, &mut tabs))?;
+        terminal.draw(|f| ui(f, &mut app))?;
 
         // Handle Inputs
         if let events::Event::Input(event) = events.next()? {
@@ -63,11 +62,20 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>, mut app: App) -> Result<()> {
                 Key::Ctrl('c') | Key::Char('q') => {
                     break;
                 }
-                Key::Right => {
-                    tabs.next();
+                Key::Tab => {
+                    app.next_tab();
+                }
+                Key::Up => {
+                    app.up();
+                }
+                Key::Down => {
+                    app.down();
                 }
                 Key::Left => {
-                    tabs.previous();
+                    app.left();
+                }
+                Key::Right => {
+                    app.right();
                 }
                 _ => {}
             }

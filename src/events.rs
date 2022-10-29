@@ -5,13 +5,13 @@ use std::{io, thread};
 
 use crate::key::Key;
 
-pub enum Event<I> {
-    Input(I),
+pub enum Event {
+    Input(Key),
     Tick,
 }
 pub(crate) struct Events {
     //rx: mpsc::Receiver<Event<event::KeyCode>>,
-    rx: mpsc::Receiver<Event<Key>>,
+    rx: mpsc::Receiver<Event>,
 }
 
 impl Events {
@@ -19,7 +19,7 @@ impl Events {
         let (tx, rx) = mpsc::channel();
 
         //let tx_clone = tx.clone();
-        let tick_rate = Duration::from_millis(200);
+        let tick_rate = Duration::from_millis(30);
 
         thread::spawn(move || {
             let mut last_tick = Instant::now();
@@ -46,7 +46,7 @@ impl Events {
         Events { rx }
     }
 
-    pub fn next(&self) -> Result<Event<Key>, mpsc::RecvError> {
+    pub fn next(&self) -> Result<Event, mpsc::RecvError> {
         self.rx.recv()
     }
 }

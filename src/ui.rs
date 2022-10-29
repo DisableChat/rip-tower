@@ -15,33 +15,7 @@ use tui::{
 
 use crate::app::App;
 
-pub struct Tabss<'a> {
-    pub titles: Vec<&'a str>,
-    pub index: usize,
-}
-
-impl<'a> Tabss<'a> {
-    pub fn new() -> Tabss<'a> {
-        Tabss {
-            titles: vec!["Home", "Stats", "Help"],
-            index: 0,
-        }
-    }
-
-    pub fn next(&mut self) {
-        self.index = (self.index + 1) % self.titles.len();
-    }
-
-    pub fn previous(&mut self) {
-        if self.index > 0 {
-            self.index -= 1;
-        } else {
-            self.index = self.titles.len() - 1;
-        }
-    }
-}
-
-pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, menu: &mut Tabss) {
+pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     let size = f.size();
 
     let chunks = Layout::default()
@@ -49,7 +23,8 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, menu: &mut Tabss) {
         .constraints([Constraint::Length(3), Constraint::Min(0)].as_ref())
         .split(f.size());
 
-    let titles = menu
+    let titles = app
+        .tabs
         .titles
         .iter()
         .map(|t| {
@@ -67,7 +42,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, menu: &mut Tabss) {
                 .borders(Borders::ALL)
                 .title(app.title.to_string()),
         )
-        .select(menu.index)
+        .select(app.tabs.index)
         .style(Style::default().fg(Color::Cyan))
         .highlight_style(
             Style::default()
@@ -75,14 +50,14 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App, menu: &mut Tabss) {
                 .bg(Color::Black),
         );
     f.render_widget(tabs, chunks[0]);
-    match menu.index {
-        0 => draw_first_tab(f, menu, chunks[1]),
-        1 => draw_second_tab(f, menu, chunks[1]),
+    match app.tabs.index {
+        0 => draw_first_tab(f, chunks[1]),
+        1 => draw_second_tab(f, chunks[1], app),
         _ => {}
     };
 }
 
-fn draw_first_tab<B>(f: &mut Frame<B>, menu: &mut Tabss, area: Rect)
+fn draw_first_tab<B>(f: &mut Frame<B>, area: Rect)
 where
     B: Backend,
 {
@@ -104,26 +79,20 @@ where
     f.render_widget(block, chunks[1]);
 }
 
-fn draw_second_tab<B>(f: &mut Frame<B>, menu: &mut Tabss, area: Rect)
+fn draw_second_tab<B>(f: &mut Frame<B>, area: Rect, app: &mut App)
 where
     B: Backend,
 {
-    let ball = Rectangle {
-        x: 10.0,
-        y: 30.0,
-        width: 10.0,
-        height: 10.0,
-        color: Color::Yellow,
-    };
-
     let chunks = Layout::default();
 
+    //app.ball.x = app.ball.x + 1 as f64;
     let dots = Canvas::default()
         .block(Block::default().borders(Borders::ALL).title("Pong"))
         .paint(|ctx| {
-            ctx.draw(&ball);
+            ctx.draw(&app.ball);
         })
         .x_bounds([10.0, 110.0])
         .y_bounds([10.0, 110.0]);
+
     f.render_widget(dots, area);
 }
