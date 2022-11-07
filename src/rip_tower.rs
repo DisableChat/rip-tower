@@ -5,6 +5,7 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
+use std::fmt;
 use std::sync::mpsc;
 use std::time::{Duration, Instant};
 use std::{io, thread};
@@ -28,18 +29,16 @@ pub struct Position {
     pub y: f64,
 }
 
-pub enum Vdirection {
-    Left,
-    Right,
-    Up,
-    Down,
+impl fmt::Display for Position {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
 }
 
 pub struct Goblin {
     pub position: Position,
     pub side: Color,
     pub reset: bool,
-    pub vector_field: Vec<Vec<Vdirection>>,
 }
 
 impl Goblin {
@@ -51,7 +50,6 @@ impl Goblin {
             },
             side: Color::Green,
             reset: false,
-            vector_field: vec![],
         }
     }
 

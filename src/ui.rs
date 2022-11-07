@@ -5,6 +5,7 @@ use tui::{
     backend::{Backend, CrosstermBackend},
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
+    symbols,
     text::{Span, Spans},
     widgets::{
         canvas::{Canvas, Context, Points, Rectangle},
@@ -58,7 +59,7 @@ pub fn ui<B: Backend>(f: &mut Frame<B>, app: &mut App) {
     };
 }
 
-fn draw_first_tab<B>(f: &mut Frame<B>, area: Rect, app: &mut App)
+fn draw_third_tab<B>(f: &mut Frame<B>, area: Rect, app: &mut App)
 where
     B: Backend,
 {
@@ -102,7 +103,7 @@ where
     f.render_widget(block, chunks[1]);
 }
 
-fn draw_third_tab<B>(f: &mut Frame<B>, area: Rect, app: &mut App)
+fn draw_first_tab<B>(f: &mut Frame<B>, area: Rect, app: &mut App)
 where
     B: Backend,
 {
@@ -113,6 +114,7 @@ where
     let chunks = Layout::default()
         .constraints([Constraint::Percentage(90), Constraint::Percentage(10)].as_ref())
         .split(area);
+
     //app.ball.x = app.ball.x + 1 as f64;
     let dots = Canvas::default()
         .block(
@@ -161,6 +163,12 @@ where
             } else {
                 format!(" ")
             },
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Yellow),
+        )),
+        Spans::from(Span::styled(
+            format!("The current loc {}", app.goblin.position),
             Style::default()
                 .add_modifier(Modifier::BOLD)
                 .fg(Color::Yellow),
